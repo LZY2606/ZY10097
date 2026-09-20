@@ -34,3 +34,8 @@ coverage/
 .vite/
 .turbo/
 *.tsbuildinfo
+
+# --- local H2 database ---
+data/
+data-*/
+.trash-data-*/

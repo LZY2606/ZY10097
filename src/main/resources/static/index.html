@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>因果事件调试台</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="topbar">
+    <div class="brand">因果事件调试台 <span class="sub">partial-order · invariant replay</span></div>
+    <div class="actions">
+        <button id="btn-sample" class="ghost">载入样例故障</button>
+        <button id="btn-refresh" class="ghost">刷新</button>
+    </div>
+</header>
+
+<main class="layout">
+    <aside class="sidebar">
+        <section>
+            <h2>事件日志</h2>
+            <div id="log-list" class="list"></div>
+            <details class="ingest-box">
+                <summary>摄取新日志（追加，不改原日志）</summary>
+                <p class="hint">JSON 数组：uid/service/seq/key/parent/type/payloadHash/ts</p>
+                <textarea id="ingest-name" placeholder="日志名称" rows="1"></textarea>
+                <textarea id="ingest-json" rows="8" placeholder='[{"uid":"e1","service":"svc-a",...}]'></textarea>
+                <button id="btn-ingest">摄取</button>
+            </details>
+        </section>
+
+        <section>
+            <h2>调试会话</h2>
+            <div id="session-list" class="list"></div>
+            <button id="btn-new-session" class="ghost">基于当前日志新建会话</button>
+        </section>
+    </aside>
+
+    <section class="content">
+        <div id="conflict-banner" class="banner conflict hidden">
+            <strong>修订冲突：</strong><span id="conflict-text"></span>
+            <div class="banner-actions">
+                <button id="btn-conflict-reload">查看对方内容</button>
+                <button id="btn-conflict-merge" class="primary">在最新修订上重新合并</button>
+            </div>
+        </div>
+
+        <div id="session-meta" class="meta hidden">
+            <div>
+                <label>会话名</label>
+                <input id="session-name">
+            </div>
+            <div>
+                <label>规则版本</label>
+                <span id="rule-version" class="pill"></span>
+            </div>
+            <div>
+                <label>日志指纹</label>
+                <code id="log-fp"></code>
+            </div>
+            <div>
+                <label>修订</label>
+                <span id="session-rev" class="pill"></span>
+            </div>
+            <div class="grow"></div>
+            <button id="btn-save" class="primary">保存假设</button>
+            <button id="btn-derive">派生到新日志</button>
+            <button id="btn-export">导出</button>
+        </div>
+
+        <div id="placeholder-banner" class="banner warn hidden"></div>
+
+        <div class="panels">
+            <section class="panel">
+                <div class="panel-head">
+                    <h2>偏序图</h2>
+                    <div class="hint">实线=显式因果边，虚线=服务内顺序；墙钟仅展示</div>
+                </div>
+                <div class="hypo-controls">
+                    <label>固定拓扑序（逗号分隔 uid，留空=规范种子）
+                        <input id="fixed-order" placeholder="e1,e2,e4,e3">
+                    </label>
+                    <button id="btn-fixed-replay">按此序重放</button>
+                </div>
+                <div id="graph-area"></div>
+            </section>
+
+            <section class="panel">
+                <div class="panel-head">
+                    <h2>最早失败 & 最小切片</h2>
+                </div>
+                <div id="failure-area" class="scroll-y"></div>
+            </section>
+        </div>
+
+        <div class="panels">
+            <section class="panel">
+                <div class="panel-head"><h2>聚合状态轨迹</h2></div>
+                <div id="aggregate-area" class="scroll-y"></div>
+            </section>
+
+            <section class="panel">
+                <div class="panel-head">
+                    <h2>修复假设</h2>
+                    <div class="hint">候选重放不更改原始证据</div>
+                </div>
+                <div class="hypo-controls">
+                    <button id="btn-replay" class="primary">按假设重放</button>
+                    <label>交错上限 <input id="bound" type="number" value="32" min="1" max="128" style="width:70px"></label>
+                </div>
+                <div id="hypo-area" class="scroll-y"></div>
+            </section>
+        </div>
+
+        <section class="panel">
+            <div class="panel-head">
+                <h2>有界交错枚举</h2>
+                <div class="hint">达到边界即标记 UNKNOWN，不假装穷举</div>
+            </div>
+            <div id="interleaving-area" class="scroll-y"></div>
+        </section>
+    </section>
+</main>
+
+<dialog id="export-dialog">
+    <h3>导出（最小切片 · 假设 · 拓扑种子）</h3>
+    <textarea id="export-text" rows="22"></textarea>
+    <div class="right"><button id="btn-export-close">关闭</button></div>
+</dialog>
+
+<script src="/app.js"></script>
+</body>
+</html>
