@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Causal Workbench</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header>
+  <div><h1>因果事件调试台</h1><p>原始证据只追加；偏序由显式因果边和服务内序号决定，墙钟仅展示。</p></div>
+  <button id="refreshBtn">刷新</button>
+</header>
+<main>
+  <section class="card"><h2>接收日志</h2><textarea id="eventInput" rows="12"></textarea>
+    <div class="row"><input id="batchId" placeholder="可选幂等批次 ID"><button id="ingestBtn">追加接收</button></div>
+    <p class="hint">数组 JSON：eventId/service/seq/key/type/payload/parentId/timestamp。</p><div id="ingestResult"></div>
+  </section>
+  <section class="card"><h2>证据与偏序图</h2><p id="logFingerprint" class="fingerprint"></p>
+    <div class="row wrap"><button id="createSessionBtn">固定当前日志为调试会话</button><select id="sessionSelect"></select><button id="deriveBtn">从旧会话派生新日志会话</button></div>
+    <div id="graph" class="graph"></div><div id="evidenceTable"></div>
+  </section>
+  <section class="card"><h2>修复假设与重放</h2>
+    <div class="grid"><label><input id="ignoreDup" type="checkbox" checked> 忽略字节重复</label><label><input id="fillMissing" type="checkbox" checked> 补入缺失父项占位</label><label>交错上限 <input id="bound" type="number" value="100" min="0" max="1000"></label></div>
+    <textarea id="adjustments" rows="5" placeholder='{"event-id":"corrected-aggregate-key"}'></textarea><textarea id="seedOrder" rows="4" placeholder="可选拓扑种子：每行一个 eventId"></textarea>
+    <div class="row wrap"><button id="previewBtn">预演候选</button><button id="saveCandidateBtn">保存候选到会话</button></div><div id="replayResult"></div>
+  </section>
+  <section class="card"><h2>会话、候选与最早失败</h2><div id="sessionDetail"></div></section>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: causal-workbench
+  datasource:
+    url: jdbc:h2:file:./data/causal-workbench;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;AUTO_SERVER=TRUE
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+  h2:
+    console:
+      enabled: false
+server:
+  port: 5221
+
+workbench:
+  replay:
+    default-interleaving-bound: 100

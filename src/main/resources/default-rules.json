@@ -1,0 +1,40 @@
+{
+  "initialState": "CREATED",
+  "eventTypes": {
+    "CREATE": {
+      "initialState": null,
+      "transitions": {
+        "CREATED": "ACTIVE"
+      }
+    },
+    "ACTIVATE": {
+      "initialState": null,
+      "transitions": {
+        "CREATED": "ACTIVE",
+        "SUSPENDED": "ACTIVE",
+        "PENDING": "ACTIVE"
+      }
+    },
+    "SUSPEND": {
+      "initialState": null,
+      "transitions": {
+        "ACTIVE": "SUSPENDED"
+      }
+    },
+    "COMPLETE": {
+      "initialState": null,
+      "transitions": {
+        "ACTIVE": "COMPLETED"
+      }
+    },
+    "CANCEL": {
+      "initialState": null,
+      "transitions": {
+        "CREATED": "CANCELLED",
+        "ACTIVE": "CANCELLED",
+        "PENDING": "CANCELLED",
+        "SUSPENDED": "CANCELLED"
+      }
+    }
+  }
+}
